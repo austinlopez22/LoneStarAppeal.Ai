@@ -21,7 +21,13 @@ const PropertyForm: React.FC = () => {
         // Call the AI service to process the property information
         // processPropertyInfo(propertyInfo);
     };
-
+// tsconfig.json
+{
+  "compilerOptions"; {
+    // ...existing options...
+    "jsx"; "react-jsx"
+  }
+}
     return (
         <form onSubmit={handleSubmit}>
             <div>
