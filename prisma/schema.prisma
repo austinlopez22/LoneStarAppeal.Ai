@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  properties Property[]
+}
+
+model Property {
+  id            String   @id @default(cuid())
+  userId        String
+  address       String
+  county        String
+  state         String
+  propertyType  String
+  squareFootage Int?
+  lotSize       Float?
+  yearBuilt     Int?
+  bedrooms      Int?
+  bathrooms     Float?
+  upgrades      String?
+  currentValue  Float?
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  reports  Report[]
+}
+
+model Report {
+  id           String   @id @default(cuid())
+  propertyId   String
+  aiAnalysis   String
+  appealLetter String
+  pdfUrl       String?
+  createdAt    DateTime @default(now())
+
+  property Property @relation(fields: [propertyId], references: [id])
+}
+
+model JurisdictionRule {
+  id                   String   @id @default(cuid())
+  county               String
+  state                String
+  title                String
+  summary              String
+  evidenceRequirements String?
+  filingDeadline       String?
+  sourceUrl            String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model ComparableProperty {
+  id             String   @id @default(cuid())
+  address        String
+  county         String
+  state          String
+  propertyType   String
+  squareFootage  Int?
+  bedrooms       Int?
+  bathrooms      Float?
+  yearBuilt      Int?
+  salePrice      Float?
+  assessedValue  Float?
+  sourceUrl      String?
+  sourceNotes    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
