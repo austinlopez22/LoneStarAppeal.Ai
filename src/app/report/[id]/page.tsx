@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { getServerSession } from 'next-auth';
 
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 
 export default async function Report({
@@ -8,10 +10,21 @@ export default async function Report({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+    notFound();
+  }
+
   const { id } = await params;
 
-  const report = await prisma.report.findUnique({
-    where: { id },
+  const report = await prisma.report.findFirst({
+    where: {
+      id,
+      property: {
+        userId: session.user.id,
+      },
+    },
     include: {
       property: true,
     },
